@@ -11,9 +11,12 @@ function App() {
   const [input, setInput] = useState("")
   const [result, setResult] = useState('')
   const [optionId, setOptionId] = useState('')
+  const [error, setError] = useState('')
+
+  const { REACT_APP_OPENAI_API_KEY } = process.env;
 
   const configuration = new Configuration({
-    apiKey: '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',
+    apiKey: REACT_APP_OPENAI_API_KEY,
   });
 
   const openai = new OpenAIApi(configuration);
@@ -25,6 +28,10 @@ function App() {
   }
 
   const doStuff = async (optionValue) => {
+    if(input === '' || input.length < 1 || !input) {
+      setError('Please enter some value')
+      return false
+    }
 
     let object = {...option, prompt: input}
 
@@ -36,10 +43,10 @@ function App() {
         if(error.response){
           console.log(error.response.status);
           console.log(error.response.data);
-          setResult(error.response.data)
+          setError(error.response.data.error.message)
         } else {
           console.log(error.message);
-          setResult(error.message)
+          setError(error.message)
         }
       }
       
@@ -54,10 +61,10 @@ function App() {
         if(error.response){
           console.log(error.response.status);
           console.log(error.response.data);
-          setResult(error.response.data)
+          setError(error.response.data.error.message)
         } else {
           console.log(error.message);
-          setResult(error.message)
+          setError(error.message)
         }
       }
     }
@@ -67,8 +74,8 @@ function App() {
   return (
     <div className="App">
       {Object.values(option).length === 0 && <OptionSelection arrayItems={arrayItems} selectOption={selectOption} setOptionId={setOptionId}/>}
-      {optionId === 'imageGeneration' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId}/>}
-      {optionId === 'q&a' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId}/>} 
+      {optionId === 'imageGeneration' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId} error={error}/>}
+      {optionId === 'q&a' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId} error={error}/>} 
     </div>
   );
 }
