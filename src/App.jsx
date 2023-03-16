@@ -4,6 +4,7 @@ import { arrayItems } from './components/AIOptions';
 import Translation from './components/Translation';
 import { useState } from 'react';
 import { Configuration, OpenAIApi } from 'openai';
+import SpeechToText from './components/SpeechToText';
 
 function App() {
 
@@ -53,7 +54,6 @@ function App() {
     }
 
     if(optionValue === 'imageGeneration') {
-      console.log('object',object)
       try {
         const response = await openai.createImage(object);
         setResult(response.data.data[0].url)
@@ -75,7 +75,8 @@ function App() {
     <div className="App">
       {Object.values(option).length === 0 && <OptionSelection arrayItems={arrayItems} selectOption={selectOption} setOptionId={setOptionId}/>}
       {optionId === 'imageGeneration' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId} error={error}/>}
-      {optionId === 'q&a' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId} error={error}/>} 
+      {optionId === 'q&a' && <Translation doStuff={doStuff} setInput={setInput} result={result} optionId={optionId} error={error}/>}
+      {optionId === 'speechtotext' && <SpeechToText />} 
     </div>
   );
 }
